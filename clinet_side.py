@@ -1,10 +1,23 @@
 from SshToServer import SshToServer
+import json
+import pandas as pd
 import os
+
+
+def appendToCsv(file_path: str, data: dict) -> None:
+    df_new = pd.DataFrame([data])
+    if os.path.isfile(file_path):
+        df_existing = pd.read_csv(file_path)
+        df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+    else:
+        df_combined = df_new
+    df_combined.to_csv(file_path, index=False)
 
 
 def getResponse(ssh_obj: SshToServer, command: str) -> str:
     stdout, stderr = ssh_obj.runRemoteCommand(command)
     return stdout
+
 
 key_pair = input("Input key-pair path: ")
 public_ip = input("Input public ip: ")
@@ -18,9 +31,6 @@ if response == "":
     raise ValueError("ERROR no response")
 
 csv_file = "stat.csv"
-if os.path.exists(csv_file):
-    with open(csv_file, 'a') as file:
-        file.write(response)
-else:
-    with open(csv_file, "w") as file:
-        file.writelines(("timestamp,INFO,WARN,ERROR\n", response))
+response = json.loads(response)
+print(response)
+appendToCsv(csv_file, response)
