@@ -15,12 +15,15 @@ with open(log_file) as file:
 
 info, warn, error = 0, 0, 0
 for line in lines:
-    line = line.lower()
-    if 'info' in line:
+    segments = line.split()
+    if len(segments) < 6 :
+        continue
+    severity = segments[5]
+    if severity == "INFO":
         info += 1
-    elif 'warn' in line:
+    elif severity == "WARN":
         warn += 1
-    elif 'error' in line:
+    elif severity == "ERROR":
         error += 1
 
 

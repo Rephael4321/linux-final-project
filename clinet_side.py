@@ -32,5 +32,4 @@ if response == "":
 
 csv_file = "stat.csv"
 response = json.loads(response)
-print(response)
 appendToCsv(csv_file, response)
